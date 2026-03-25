@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyQuest — Daily Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #090c1a;
+    --surface: #111526;
+    --surface2: #1a1f38;
+    --border: #252c4a;
+    --accent: #4f8cff;
+    --accent2: #a259ff;
+    --accent3: #00e5c0;
+    --warn: #ffb347;
+    --danger: #ff5c6a;
+    --success: #39e58c;
+    --text: #e8ecff;
+    --text-muted: #7a85b0;
+    --font-display: 'Orbitron', monospace;
+    --font-body: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #starfield { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .star {
+    position: absolute; border-radius: 50%; background: white;
+    animation: twinkle var(--dur, 3s) infinite ease-in-out alternate;
+    opacity: var(--op, 0.4);
+  }
+  @keyframes twinkle { from { opacity: var(--op, .4); } to { opacity: calc(var(--op, .4) * 2.5); } }
+
+  #app { position: relative; z-index: 1; }
+
+  /* LOGIN */
+  #login-screen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 2rem; padding: 2rem;
+  }
+  .logo-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: .05em; text-align: center;
+  }
+  .logo-sub { color: var(--text-muted); font-size: .95rem; margin-top: .4rem; letter-spacing: .1em; text-transform: uppercase; text-align: center; }
+  .login-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 440px;
+    box-shadow: 0 0 60px rgba(79,140,255,.12);
+  }
+  .login-card h2 { font-family: var(--font-display); font-size: 1rem; color: var(--text-muted); margin-bottom: 1.8rem; letter-spacing: .08em; }
+  .field { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.2rem; }
+  .field label { font-size: .78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; }
+  .field input, .field select {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: .75rem 1rem; color: var(--text);
+    font-family: var(--font-body); font-size: .95rem; outline: none; transition: border-color .2s;
+  }
+  .field input:focus { border-color: var(--accent); }
+  .field .hint { font-size: .72rem; color: var(--text-muted); margin-top: .3rem; line-height: 1.5; }
+  .field .hint a { color: var(--accent); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: 12px; padding: .85rem 1.5rem;
+    color: white; font-family: var(--font-display); font-size: .82rem;
+    font-weight: 700; letter-spacing: .07em; cursor: pointer; width: 100%; margin-top: .5rem;
+    transition: opacity .2s, transform .15s;
+  }
+  .btn:hover { opacity: .9; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn.secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
+  .btn.sm { padding: .5rem 1rem; font-size: .72rem; width: auto; }
+  .btn.success-btn { background: linear-gradient(135deg, var(--success), #1a9c5a); }
+
+  /* MAIN */
+  #main-app { display: none; flex-direction: column; min-height: 100vh; }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.5rem; border-bottom: 1px solid var(--border);
+    background: rgba(9,12,26,.9); backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100; gap: .5rem; flex-wrap: wrap;
+  }
+  .topbar-logo {
+    font-family: var(--font-display); font-size: 1rem; font-weight: 900;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .streak-badge {
+    display: flex; align-items: center; gap: .4rem;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: .35rem .85rem;
+    font-size: .8rem; color: var(--warn); font-family: var(--font-display); font-weight: 700;
+  }
+  .user-chip { display: flex; align-items: center; gap: .6rem; font-size: .85rem; color: var(--text-muted); }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: .7rem; font-weight: 900; color: white;
+  }
+
+  .content { flex: 1; padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; width: 100%; }
+
+  .xp-bar-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 2rem; }
+  .xp-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: .5rem; }
+  .xp-label { font-size: .75rem; color: var(--text-muted); letter-spacing: .07em; text-transform: uppercase; }
+  .xp-val { font-family: var(--font-display); font-size: .9rem; color: var(--accent2); }
+  .xp-track { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .xp-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width .6s ease; }
+
+  .tabs { display: flex; gap: .5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  .tab {
+    padding: .55rem 1.2rem; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-muted); cursor: pointer;
+    font-family: var(--font-display); font-size: .72rem; font-weight: 700;
+    letter-spacing: .06em; transition: all .2s;
+  }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+  /* DASHBOARD */
+  .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.3rem; display: flex; flex-direction: column; gap: .4rem; position: relative; overflow: hidden;
+  }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--card-color, var(--accent)); }
+  .stat-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); }
+  .stat-value { font-family: var(--font-display); font-size: 2rem; font-weight: 900; color: var(--card-color, var(--accent)); }
+  .stat-desc { font-size: .8rem; color: var(--text-muted); }
+
+  .section-title { font-family: var(--font-display); font-size: .82rem; font-weight: 700; letter-spacing: .1em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 1rem; }
+
+  /* SUBJECTS */
+  .subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+  .subject-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.5rem; cursor: pointer; transition: all .25s; position: relative; overflow: hidden;
+  }
+  .subject-card:hover { transform: translateY(-3px); border-color: var(--sc-color, var(--accent)); box-shadow: 0 8px 30px rgba(0,0,0,.3); }
+  .subject-icon { font-size: 2.2rem; margin-bottom: .7rem; display: block; }
+  .subject-name { font-family: var(--font-display); font-size: .9rem; font-weight: 700; color: var(--sc-color, var(--accent)); margin-bottom: .3rem; }
+  .subject-desc { font-size: .82rem; color: var(--text-muted); line-height: 1.5; }
+  .progress-bar { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; margin-top: 1rem; }
+  .progress-fill { height: 100%; background: var(--sc-color, var(--accent)); border-radius: 99px; transition: width .5s; }
+  .progress-label { font-size: .72rem; color: var(--text-muted); margin-top: .3rem; display: flex; justify-content: space-between; }
+
+  /* QUESTIONS */
+  #question-panel { display: none; }
+  .panel-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  .panel-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
+  .badge { padding: .25rem .7rem; border-radius: 20px; font-size: .7rem; font-weight: 700; font-family: var(--font-display); letter-spacing: .06em; }
+  .badge.math { background: rgba(79,140,255,.15); color: var(--accent); border: 1px solid rgba(79,140,255,.3); }
+  .badge.science { background: rgba(0,229,192,.15); color: var(--accent3); border: 1px solid rgba(0,229,192,.3); }
+
+  .question-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem; }
+  .question-number { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); margin-bottom: .5rem; }
+  .question-text { font-size: 1.05rem; line-height: 1.7; color: var(--text); margin-bottom: 1.5rem; }
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+  .option {
+    background: var(--surface2); border: 1.5px solid var(--border); border-radius: 12px;
+    padding: .85rem 1rem; cursor: pointer; transition: all .2s; font-size: .88rem;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .option:hover { border-color: var(--accent); background: rgba(79,140,255,.07); }
+  .option.selected { border-color: var(--accent); background: rgba(79,140,255,.12); }
+  .option.correct { border-color: var(--success); background: rgba(57,229,140,.1); color: var(--success); }
+  .option.incorrect { border-color: var(--danger); background: rgba(255,92,106,.1); color: var(--danger); }
+  .option-letter {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: .62rem; font-weight: 700; flex-shrink: 0;
+  }
+  .option.correct .option-letter { background: var(--success); color: var(--bg); }
+  .option.incorrect .option-letter { background: var(--danger); color: white; }
+
+  .explanation-box {
+    background: rgba(79,140,255,.06); border: 1px solid rgba(79,140,255,.2);
+    border-radius: 12px; padding: 1.2rem; margin-top: 1rem;
+    font-size: .87rem; line-height: 1.7; display: none;
+  }
+  .explanation-box.show { display: block; animation: fadeIn .3s ease; }
+  .explanation-label { font-family: var(--font-display); font-size: .7rem; color: var(--accent); margin-bottom: .4rem; letter-spacing: .08em; }
+
+  .action-row { display: flex; gap: .75rem; margin-top: 1.5rem; flex-wrap: wrap; align-items: center; }
+
+  /* SCORE */
+  #score-screen { display: none; text-align: center; padding: 3rem 1rem; }
+  .score-circle {
+    width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 1.5rem;
+    background: conic-gradient(var(--accent) var(--pct, 0%), var(--surface2) 0%);
+    display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .score-circle::before { content: ''; position: absolute; inset: 10px; border-radius: 50%; background: var(--bg); }
+  .score-inner { position: relative; z-index: 1; }
+  .score-num { font-family: var(--font-display); font-size: 1.8rem; font-weight: 900; color: var(--accent); }
+  .score-denom { font-size: .8rem; color: var(--text-muted); }
+
+  /* HOMEWORK */
+  .hw-form { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; }
+  .hw-form h3 { font-family: var(--font-display); font-size: .88rem; margin-bottom: 1.2rem; color: var(--warn); }
+  .hw-form textarea {
+    width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 1rem; color: var(--text); font-family: var(--font-body);
+    font-size: .93rem; resize: vertical; outline: none; min-height: 90px; transition: border-color .2s;
+  }
+  .hw-form textarea:focus { border-color: var(--warn); }
+  .hw-list { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+  .hw-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.2rem; display: flex; align-items: flex-start; gap: .8rem; }
+  .hw-check { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--border); cursor: pointer; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .hw-check.done { background: var(--success); border-color: var(--success); color: var(--bg); font-size: .75rem; }
+  .hw-text { flex: 1; font-size: .9rem; line-height: 1.5; }
+  .hw-text.done { text-decoration: line-through; color: var(--text-muted); }
+  .hw-tag { font-size: .7rem; padding: .15rem .5rem; border-radius: 20px; margin-top: .3rem; display: inline-block; background: rgba(255,255,255,.06); }
+
+  /* LOADING */
+  .loading { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 3rem; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); font-size: .9rem; line-height: 1.7; }
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
+    padding: .85rem 1.5rem; font-size: .88rem; z-index: 999;
+    animation: fadeIn .3s ease; pointer-events: none; white-space: nowrap;
+  }
+
+  @media (max-width: 500px) {
+    .options-grid { grid-template-columns: 1fr; }
+    .dash-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="starfield"></div>
+<div id="app">
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div>
+    <div class="logo-title">STUDYQUEST</div>
+    <div class="logo-sub">Daily Science &amp; Math Training</div>
+  </div>
+  <div class="login-card">
+    <h2>🚀 Mission Control</h2>
+    <div class="field">
+      <label>Commander Name</label>
+      <input type="text" id="login-name" placeholder="Enter your name" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••" />
+      <span class="hint">Default password: <strong style="color:var(--accent)">explorer</strong></span>
+    </div>
+    <div class="field">
+      <label>Anthropic API Key</label>
+      <input type="password" id="login-apikey" placeholder="sk-ant-..." />
+      <span class="hint">Get yours free at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys. Saved locally, never shared.</span>
+    </div>
+    <button class="btn" onclick="doLogin()">🚀 Launch Mission</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app">
+  <div class="topbar">
+    <div class="topbar-logo">STUDYQUEST</div>
+    <div class="streak-badge">🔥 <span id="streak-count">0</span> day streak</div>
+    <div class="user-chip">
+      <span id="topbar-name"></span>
+      <div class="avatar" id="topbar-avatar">?</div>
+      <button class="btn secondary sm" onclick="doLogout()">Exit</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="xp-bar-wrap">
+      <div class="xp-row">
+        <span class="xp-label">⚡ Level <span id="xp-level">1</span></span>
+        <span class="xp-val"><span id="xp-current">0</span> / <span id="xp-next">100</span> XP</span>
+      </div>
+      <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('dashboard')">🏠 Dashboard</div>
+      <div class="tab" onclick="showTab('practice')">⚡ Practice</div>
+      <div class="tab" onclick="showTab('homework')">📋 Homework</div>
+    </div>
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard">
+      <div class="dash-grid">
+        <div class="stat-card" style="--card-color:var(--accent)">
+          <div class="stat-label">Today's Questions</div>
+          <div class="stat-value" id="stat-today">0</div>
+          <div class="stat-desc">Daily goal: 10</div>
+        </div>
+        <div class="stat-card" style="--card-color:var(--accent2)">
+          <div class="stat-label">Total Questions</div>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-desc">All-time answered</div>
+        </div>
+        <div class="stat-card" style="--card-color:var(--success)">
+          <div class="stat-label">Accuracy</div>
+          <div class="stat-value" id="stat-acc">—</div>
+          <div class="stat-desc">Correct answers</div>
+        </div>
+        <div class="stat-card" style="--card-color:var(--warn)">
+          <div class="stat-label">Homework Done</div>
+          <div class="stat-value" id="stat-hw">0</div>
+          <div class="stat-desc">Tasks completed</div>
+        </div>
+      </div>
+      <div class="section-title">Choose a Subject</div>
+      <div class="subject-grid" id="subject-grid-dash"></div>
+    </div>
+
+    <!-- PRACTICE TAB -->
+    <div id="tab-practice" style="display:none">
+      <div id="subject-select-panel">
+        <div class="section-title">Select a Subject</div>
+        <div class="subject-grid" id="subject-grid-practice"></div>
+      </div>
+      <div id="question-panel">
+        <div class="panel-header">
+          <button class="btn secondary sm" onclick="backToSubjects()">← Back</button>
+          <div class="panel-title" id="panel-title">Algebra</div>
+          <span class="badge math" id="panel-badge">MATH</span>
+        </div>
+        <div id="questions-container"></div>
+        <div id="score-screen">
+          <div class="score-circle" id="score-circle">
+            <div class="score-inner">
+              <div class="score-num" id="score-num">0</div>
+              <div class="score-denom" id="score-denom">of 5</div>
+            </div>
+          </div>
+          <h2 style="font-family:var(--font-display);margin-bottom:.5rem" id="score-msg"></h2>
+          <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:2rem" id="score-sub"></p>
+          <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+            <button class="btn sm" onclick="generateQuestions(currentSubject)">🔄 New Questions</button>
+            <button class="btn secondary sm" onclick="backToSubjects()">↩ Choose Subject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOMEWORK TAB -->
+    <div id="tab-homework" style="display:none">
+      <div class="hw-form">
+        <h3>📌 Add Homework Task</h3>
+        <div class="field">
+          <label>Subject</label>
+          <select id="hw-subject" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;color:var(--text);font-family:var(--font-body);font-size:.93rem;outline:none;">
+            <option value="math">Mathematics</option>
+            <option value="science">Science</option>
+            <option value="algebra">Algebra</option>
+            <option value="biology">Biology</option>
+            <option value="geometry">Geometry</option>
+            <option value="chemistry">Chemistry</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Task Description</label>
+          <textarea id="hw-input" placeholder="e.g. Page 45, problems 1–15 on fractions..."></textarea>
+        </div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.5rem">
+          <button class="btn sm" onclick="addHW()">+ Add Task</button>
+          <button class="btn secondary sm" onclick="getHWHelp()">🤖 Get AI Help</button>
+        </div>
+        <div id="hw-tip"></div>
+      </div>
+      <div class="section-title">My Homework List</div>
+      <ul class="hw-list" id="hw-list"></ul>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ── STARFIELD ──
+(function(){
+  const sf = document.getElementById('starfield');
+  for(let i=0;i<120;i++){
+    const s=document.createElement('div'); s.className='star';
+    const sz=Math.random()*2.5+.5;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--op:${.2+Math.random()*.6};animation-delay:${Math.random()*4}s`;
+    sf.appendChild(s);
+  }
+})();
+
+// ── STATE ──
+const STORAGE_KEY = 'sq_v2';
+let state = {
+  loggedIn: false, name: '', apiKey: '',
+  streak: 0, lastDate: '', todayDate: '', todayQ: 0,
+  xp: 0, totalQ: 0, correct: 0,
+  hwList: [], subjectProgress: {}
+};
+
+function load() {
+  try { const s = localStorage.getItem(STORAGE_KEY); if(s) state = {...state, ...JSON.parse(s)}; } catch(e){}
+}
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+}
+load();
+
+// ── SUBJECTS ──
+const SUBJECTS = [
+  { id:'algebra',    name:'Algebra',          icon:'🔢', color:'var(--accent)',  type:'math',    desc:'Variables, equations & expressions' },
+  { id:'geometry',   name:'Geometry',          icon:'📐', color:'#f7c59f',        type:'math',    desc:'Shapes, angles, area & perimeter' },
+  { id:'arithmetic', name:'Math Fundamentals', icon:'➕', color:'var(--accent2)', type:'math',    desc:'Fractions, decimals & percentages' },
+  { id:'biology',    name:'Life Science',       icon:'🧬', color:'var(--success)', type:'science', desc:'Cells, ecosystems & genetics' },
+  { id:'physics',    name:'Physical Science',   icon:'⚡', color:'var(--warn)',    type:'science', desc:'Forces, energy & motion' },
+  { id:'chemistry',  name:'Chemistry Basics',   icon:'🧪', color:'var(--accent3)', type:'science', desc:'Elements, reactions & periodic table' },
+];
+
+let currentSubject = null, currentQs = [], answers = {}, revealed = false;
+
+// ── AUTH ──
+function doLogin() {
+  const name = document.getElementById('login-name').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const key  = document.getElementById('login-apikey').value.trim();
+  if(!name) { toast('Enter your name!'); return; }
+  if(pass !== 'explorer') { toast('Wrong password — try: explorer'); return; }
+  if(!key || !key.startsWith('sk-')) { toast('Enter a valid API key (starts with sk-)'); return; }
+
+  state.name = name;
+  state.apiKey = key;
+  state.loggedIn = true;
+
+  const today = new Date().toDateString();
+  if(state.lastDate !== today) {
+    const yest = new Date(); yest.setDate(yest.getDate()-1);
+    state.streak = (state.lastDate === yest.toDateString()) ? state.streak + 1 : 1;
+    state.lastDate = today;
+  }
+  if(state.todayDate !== today) { state.todayQ = 0; state.todayDate = today; }
+
+  save();
+  showApp();
+}
+
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('main-app').style.display = 'none';
+  // pre-fill key for convenience
+  document.getElementById('login-apikey').value = state.apiKey || '';
+  document.getElementById('login-name').value = state.name || '';
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'flex';
+  updateUI();
+  buildGrids();
+  renderHW();
+}
+
+// ── UI ──
+function updateUI() {
+  document.getElementById('topbar-name').textContent = state.name;
+  document.getElementById('topbar-avatar').textContent = state.name.charAt(0).toUpperCase();
+  document.getElementById('streak-count').textContent = state.streak;
+  document.getElementById('stat-today').textContent = state.todayQ;
+  document.getElementById('stat-total').textContent = state.totalQ;
+  document.getElementById('stat-acc').textContent = state.totalQ ? Math.round(state.correct/state.totalQ*100)+'%' : '—';
+  document.getElementById('stat-hw').textContent = state.hwList.filter(h=>h.done).length;
+  const level = Math.floor(state.xp/100)+1;
+  document.getElementById('xp-level').textContent = level;
+  document.getElementById('xp-current').textContent = state.xp;
+  document.getElementById('xp-next').textContent = level*100;
+  document.getElementById('xp-fill').style.width = (state.xp%100)+'%';
+}
+
+function buildGrids() {
+  ['subject-grid-dash','subject-grid-practice'].forEach(id => {
+    const g = document.getElementById(id); g.innerHTML = '';
+    SUBJECTS.forEach(s => {
+      const p = state.subjectProgress[s.id]||{done:0,correct:0};
+      const pct = p.done ? Math.round(p.correct/p.done*100) : 0;
+      const c = document.createElement('div');
+      c.className = 'subject-card'; c.style.setProperty('--sc-color', s.color);
+      c.innerHTML = `<span class="subject-icon">${s.icon}</span>
+        <div class="subject-name">${s.name}</div>
+        <div class="subject-desc">${s.desc}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="progress-label"><span>${p.done} done</span><span>${pct}% acc</span></div>`;
+      c.onclick = () => { if(id==='subject-grid-dash') showTab('practice'); generateQuestions(s.id); };
+      g.appendChild(c);
+    });
+  });
+}
+
+function showTab(t) {
+  ['dashboard','practice','homework'].forEach((n,i) => {
+    document.getElementById('tab-'+n).style.display = n===t?'block':'none';
+    document.querySelectorAll('.tab')[i].classList.toggle('active', n===t);
+  });
+}
+
+// ── API CALL ──
+async function callClaude(prompt) {
+  const key = state.apiKey;
+  if(!key) throw new Error('No API key. Please log out and log back in.');
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1500,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.message);
+  return data.content.map(b=>b.text||'').join('');
+}
+
+// ── QUESTIONS ──
+async function generateQuestions(subjectId) {
+  currentSubject = subjectId;
+  const subj = SUBJECTS.find(s=>s.id===subjectId);
+
+  document.getElementById('subject-select-panel').style.display = 'none';
+  document.getElementById('question-panel').style.display = 'block';
+  document.getElementById('score-screen').style.display = 'none';
+  document.getElementById('panel-title').textContent = subj.name;
+  document.getElementById('panel-badge').textContent = subj.type.toUpperCase();
+  document.getElementById('panel-badge').className = 'badge '+subj.type;
+
+  const container = document.getElementById('questions-container');
+  container.innerHTML = `<div class="loading"><div class="spinner"></div><p style="color:var(--text-muted);font-size:.9rem">Generating questions on ${subj.name}…</p></div>`;
+  answers = {}; revealed = false;
+
+  const prompt = `You are a friendly tutor for a 7th grader (age 12-13).
+Generate exactly 5 multiple-choice questions about: "${subj.name}" (${subj.desc}).
+- Grade-appropriate and clear
+- 4 options each labeled A, B, C, D
+- One correct answer
+- Brief friendly explanation for correct answer
+
+Reply ONLY with valid JSON, no markdown, no extra text:
+{"questions":[{"q":"Question?","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"Because..."}]}
+correct is 0-indexed (0=A,1=B,2=C,3=D).`;
+
+  try {
+    const text = await callClaude(prompt);
+    const clean = text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    currentQs = parsed.questions;
+    renderQuestions();
+  } catch(e) {
+    container.innerHTML = `<div class="empty-state">⚠️ ${e.message}<br><br><button class="btn sm" onclick="generateQuestions('${subjectId}')">Try Again</button></div>`;
+  }
+}
+
+function renderQuestions() {
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  currentQs.forEach((q,qi) => {
+    const div = document.createElement('div');
+    div.className = 'question-card';
+    div.innerHTML = `
+      <div class="question-number">Question ${qi+1} of ${currentQs.length}</div>
+      <div class="question-text">${q.q}</div>
+      <div class="options-grid" id="opts-${qi}">
+        ${q.options.map((o,oi)=>`<div class="option" onclick="pick(${qi},${oi})"><span class="option-letter">${'ABCD'[oi]}</span>${o.replace(/^[A-D]\.\s*/,'')}</div>`).join('')}
+      </div>
+      <div class="explanation-box" id="exp-${qi}"><div class="explanation-label">💡 Explanation</div>${q.explanation}</div>`;
+    container.appendChild(div);
+  });
+  const row = document.createElement('div');
+  row.className = 'action-row'; row.id = 'submit-row';
+  row.innerHTML = `<button class="btn success-btn" onclick="submit()">✅ Submit Answers</button>`;
+  container.appendChild(row);
+}
+
+function pick(qi, oi) {
+  if(revealed) return;
+  answers[qi] = oi;
+  document.querySelectorAll(`#opts-${qi} .option`).forEach((el,i) => el.classList.toggle('selected', i===oi));
+}
+
+function submit() {
+  if(Object.keys(answers).length < currentQs.length) { toast('Answer all questions first!'); return; }
+  revealed = true;
+  let correct = 0;
+  currentQs.forEach((q,qi) => {
+    document.querySelectorAll(`#opts-${qi} .option`).forEach((el,i) => {
+      el.classList.remove('selected');
+      if(i===q.correct) el.classList.add('correct');
+      else if(i===answers[qi]) el.classList.add('incorrect');
+    });
+    document.getElementById('exp-'+qi).classList.add('show');
+    if(answers[qi]===q.correct) correct++;
+  });
+
+  if(!state.subjectProgress[currentSubject]) state.subjectProgress[currentSubject]={done:0,correct:0};
+  state.subjectProgress[currentSubject].done += currentQs.length;
+  state.subjectProgress[currentSubject].correct += correct;
+  state.totalQ += currentQs.length;
+  state.todayQ += currentQs.length;
+  state.correct += correct;
+  state.xp += correct*10 + currentQs.length*2;
+  save(); updateUI();
+
+  document.getElementById('submit-row').remove();
+  const pct = Math.round(correct/currentQs.length*100);
+  const ss = document.getElementById('score-screen');
+  ss.style.display = 'block';
+  ss.scrollIntoView({behavior:'smooth',block:'nearest'});
+  document.getElementById('score-num').textContent = correct;
+  document.getElementById('score-denom').textContent = 'of '+currentQs.length;
+  document.getElementById('score-circle').style.setProperty('--pct', pct+'%');
+  const [msg,sub] = pct===100?['🎉 Perfect!','Every single one — incredible!']:pct>=80?['⭐ Excellent!','Almost perfect, keep it up!']:pct>=60?['👍 Good Job!','Keep practicing to improve!']:['🔄 Keep Going!','Review the tips and try again!'];
+  document.getElementById('score-msg').textContent = msg;
+  document.getElementById('score-sub').textContent = sub;
+}
+
+function backToSubjects() {
+  document.getElementById('subject-select-panel').style.display = 'block';
+  document.getElementById('question-panel').style.display = 'none';
+  document.getElementById('score-screen').style.display = 'none';
+  buildGrids();
+}
+
+// ── HOMEWORK ──
+function addHW() {
+  const text = document.getElementById('hw-input').value.trim();
+  const subject = document.getElementById('hw-subject').value;
+  if(!text) { toast('Enter a task first!'); return; }
+  state.hwList.push({ id: Date.now(), text, subject, done: false });
+  document.getElementById('hw-input').value = '';
+  save(); renderHW(); updateUI();
+}
+
+async function getHWHelp() {
+  const text = document.getElementById('hw-input').value.trim();
+  const subject = document.getElementById('hw-subject').value;
+  if(!text) { toast('Enter your homework task first!'); return; }
+  const tip = document.getElementById('hw-tip');
+  tip.innerHTML = '<div class="loading" style="padding:1.5rem"><div class="spinner"></div></div>';
+  try {
+    const result = await callClaude(`A 7th grader has this ${subject} homework: "${text}". Give a helpful, encouraging 3-sentence study tip to help them get started. Be friendly. Don't solve it — just guide them.`);
+    tip.innerHTML = `<div class="explanation-box show" style="margin-top:1rem"><div class="explanation-label">🤖 AI Study Tip</div>${result}</div>`;
+    setTimeout(()=>tip.innerHTML='', 20000);
+  } catch(e) { tip.innerHTML = `<div class="empty-state" style="padding:1rem">⚠️ ${e.message}</div>`; }
+}
+
+function toggleHW(id) {
+  const h = state.hwList.find(h=>h.id===id);
+  if(h) { h.done=!h.done; save(); renderHW(); updateUI(); }
+}
+function deleteHW(id) {
+  state.hwList = state.hwList.filter(h=>h.id!==id);
+  save(); renderHW(); updateUI();
+}
+
+function renderHW() {
+  const list = document.getElementById('hw-list');
+  if(!list) return;
+  if(!state.hwList.length) {
+    list.innerHTML = '<li class="empty-state">No homework yet — add tasks above!</li>'; return;
+  }
+  const colors = {math:'var(--accent)',science:'var(--accent3)',algebra:'var(--accent)',biology:'var(--success)',geometry:'#f7c59f',chemistry:'var(--warn)'};
+  list.innerHTML = state.hwList.map(h=>`
+    <li class="hw-item">
+      <div class="hw-check ${h.done?'done':''}" onclick="toggleHW(${h.id})">${h.done?'✓':''}</div>
+      <div style="flex:1">
+        <div class="hw-text ${h.done?'done':''}">${h.text}</div>
+        <span class="hw-tag" style="color:${colors[h.subject]||'var(--accent)'}">${h.subject}</span>
+      </div>
+      <button class="btn secondary sm" onclick="deleteHW(${h.id})" style="color:var(--danger);border-color:var(--danger);padding:.3rem .6rem">✕</button>
+    </li>`).join('');
+}
+
+// ── UTILS ──
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2500);
+}
+
+// ── INIT ──
+if(state.loggedIn) {
+  document.getElementById('login-apikey').value = state.apiKey||'';
+  document.getElementById('login-name').value = state.name||'';
+  showApp();
+}
+renderHW();
+</script>
+</body>
+</html>
