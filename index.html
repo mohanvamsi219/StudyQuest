@@ -35,6 +35,11 @@
   .grade-btn.selected{background:rgba(79,140,255,.15);border-color:var(--accent);}
   .grade-btn .gnum{font-family:var(--font-display);font-size:.9rem;font-weight:700;color:var(--text);}
   .grade-btn .glabel{font-size:.6rem;color:var(--text-muted);margin-top:.2rem;}
+  .user-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.85rem 1.1rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.7rem;min-width:140px;}
+  .user-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .user-card .uavatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:.8rem;font-weight:900;color:white;flex-shrink:0;}
+  .user-card .uinfo .uname{font-family:var(--font-display);font-size:.78rem;font-weight:700;color:var(--text);}
+  .user-card .uinfo .ustats{font-size:.7rem;color:var(--text-muted);margin-top:.15rem;}
   .grade-btn.selected .gnum,.grade-btn.selected .glabel{color:var(--accent);}
   /* BUTTONS */
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;padding:.85rem 1.5rem;color:white;font-family:var(--font-display);font-size:.82rem;font-weight:700;letter-spacing:.07em;cursor:pointer;width:100%;margin-top:.5rem;transition:opacity .2s,transform .15s;}
@@ -170,6 +175,11 @@
       <div class="grade-grid" id="login-grade-grid"></div>
     </div>
     <button class="btn" onclick="doLogin()">🚀 Launch Mission</button>
+  </div>
+  <!-- Returning users -->
+  <div id="user-switcher" style="width:100%;max-width:460px;display:none;">
+    <div style="font-family:var(--font-display);font-size:.75rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;text-align:center;">👋 Returning Commanders</div>
+    <div id="user-cards" style="display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;"></div>
   </div>
 </div>
 
@@ -349,14 +359,36 @@ function getSubjects(gradeId) {
   }
 })();
 
-// STATE
-const SK='sq_v3';
-let state={loggedIn:false,name:'',grade:'7',streak:0,lastDate:'',todayDate:'',todayQ:0,xp:0,totalQ:0,correct:0,hwList:[],subjectProgress:{}};
+// ── PER-USER STATE ──
+// Each user's data stored under key: sq_user_<name>
+// Master user list stored under: sq_users
+let state = {loggedIn:false,name:'',grade:'7',streak:0,lastDate:'',todayDate:'',todayQ:0,xp:0,totalQ:0,correct:0,hwList:[],subjectProgress:{}};
 let loginGrade='7', modalGrade='7';
 
-function load(){try{const s=localStorage.getItem(SK);if(s)state={...state,...JSON.parse(s)};}catch(e){}}
-function save(){try{localStorage.setItem(SK,JSON.stringify(state));}catch(e){}}
-load();
+function userKey(name){ return 'sq_user_'+name.toLowerCase().trim().replace(/\s+/g,'_'); }
+
+function getUsers(){
+  try{ return JSON.parse(localStorage.getItem('sq_users')||'[]'); }catch(e){return [];}
+}
+function registerUser(name){
+  const users = getUsers();
+  if(!users.includes(name)) { users.push(name); localStorage.setItem('sq_users', JSON.stringify(users)); }
+}
+
+function loadUser(name){
+  try{
+    const s = localStorage.getItem(userKey(name));
+    const base = {loggedIn:false,name,grade:'7',streak:0,lastDate:'',todayDate:'',todayQ:0,xp:0,totalQ:0,correct:0,hwList:[],subjectProgress:{}};
+    return s ? {...base,...JSON.parse(s), name} : base;
+  }catch(e){ return {loggedIn:false,name,grade:'7',streak:0,lastDate:'',todayDate:'',todayQ:0,xp:0,totalQ:0,correct:0,hwList:[],subjectProgress:{}}; }
+}
+
+function save(){
+  try{
+    const toSave = {...state};
+    localStorage.setItem(userKey(state.name), JSON.stringify(toSave));
+  }catch(e){}
+}
 
 function buildGradeGrid(containerId, selected, onSelect) {
   const g=document.getElementById(containerId); g.innerHTML='';
@@ -386,19 +418,38 @@ function doLogin(){
   if(pass!=='explorer'){toast('Wrong password — try: explorer');return;}
   if(!key||!key.startsWith('sk-')){toast('Enter your Anthropic API key (starts with sk-)');return;}
   if(typedKey) localStorage.setItem('sq_apikey', typedKey);
-  state.name=name; state.grade=loginGrade; state.loggedIn=true;
+
+  // Load this user's saved profile
+  state = loadUser(name);
+  state.loggedIn = true;
+  state.grade = loginGrade; // use grade selected on login screen
+
+  // Register user in master list
+  registerUser(name);
+
+  // Streak logic
   const today=new Date().toDateString();
-  if(state.lastDate!==today){const y=new Date();y.setDate(y.getDate()-1);state.streak=(state.lastDate===y.toDateString())?state.streak+1:1;state.lastDate=today;}
+  if(state.lastDate!==today){
+    const y=new Date();y.setDate(y.getDate()-1);
+    state.streak=(state.lastDate===y.toDateString())?state.streak+1:1;
+    state.lastDate=today;
+  }
   if(state.todayDate!==today){state.todayQ=0;state.todayDate=today;}
   save(); showApp();
 }
 
 function doLogout(){
+  save(); // save current user before leaving
+  const lastName = state.name;
+  const lastGrade = state.grade;
+  state = {loggedIn:false,name:'',grade:'7',streak:0,lastDate:'',todayDate:'',todayQ:0,xp:0,totalQ:0,correct:0,hwList:[],subjectProgress:{}};
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('main-app').style.display='none';
-  document.getElementById('login-name').value=state.name||'';
-  loginGrade=state.grade||'7';
-  buildGradeGrid('login-grade-grid',loginGrade,id=>{loginGrade=id;});
+  document.getElementById('login-name').value='';
+  loginGrade='7';
+  buildGradeGrid('login-grade-grid','7',id=>{loginGrade=id;});
+  // Show user switcher
+  renderUserSwitcher();
 }
 
 function showApp(){
@@ -620,6 +671,36 @@ function resetKey(){
   }
 }
 
+function renderUserSwitcher(){
+  const users = getUsers();
+  const sw = document.getElementById('user-switcher');
+  const cards = document.getElementById('user-cards');
+  if(!sw||!cards) return;
+  if(users.length === 0){ sw.style.display='none'; return; }
+  sw.style.display='block';
+  cards.innerHTML = '';
+  users.forEach(name => {
+    const u = loadUser(name);
+    const lvl = Math.floor((u.xp||0)/100)+1;
+    const acc = u.totalQ ? Math.round(u.correct/u.totalQ*100)+'%' : '—';
+    const card = document.createElement('div');
+    card.className='user-card';
+    card.innerHTML=`<div class="uavatar">${name.charAt(0).toUpperCase()}</div>
+      <div class="uinfo">
+        <div class="uname">${name}</div>
+        <div class="ustats">${getGradeLabel(u.grade||'7')} · Lv.${lvl} · ${acc} acc</div>
+      </div>`;
+    card.onclick=()=>{
+      document.getElementById('login-name').value = name;
+      loginGrade = u.grade||'7';
+      buildGradeGrid('login-grade-grid', loginGrade, id=>{loginGrade=id;});
+      document.getElementById('login-name').focus();
+      toast('👋 Welcome back, '+name+'! Enter password to continue.');
+    };
+    cards.appendChild(card);
+  });
+}
+
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
 
 // Hide API key field if already saved
@@ -629,12 +710,8 @@ if(_savedKey) {
   if(f) f.style.display = 'none';
 }
 
-if(state.loggedIn){
-  document.getElementById('login-name').value=state.name||'';
-  loginGrade=state.grade||'7';
-  buildGradeGrid('login-grade-grid',loginGrade,id=>{loginGrade=id;});
-  showApp();
-}
+// Show returning user cards
+renderUserSwitcher();
 renderHW();
 </script>
 </body>
