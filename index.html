@@ -157,6 +157,14 @@
       <input type="password" id="login-pass" placeholder="••••••••" />
       <span style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem">Default password: <strong style="color:var(--accent)">explorer</strong></span>
     </div>
+    <div class="field" id="apikey-field">
+      <label>Anthropic API Key</label>
+      <input type="password" id="login-apikey" placeholder="sk-ant-..." />
+      <span style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem">
+        Saved permanently on this device. Get your key at
+        <a href="https://console.anthropic.com/settings/api-keys" target="_blank" style="color:var(--accent)">console.anthropic.com</a>
+      </span>
+    </div>
     <div class="field">
       <label>Select Your Grade</label>
       <div class="grade-grid" id="login-grade-grid"></div>
@@ -188,6 +196,7 @@
     <div class="user-chip">
       <span id="topbar-name"></span>
       <div class="avatar" id="topbar-avatar">?</div>
+      <button class="btn secondary sm" onclick="resetKey()" title="Change API Key" style="padding:.4rem .7rem">🔑</button>
       <button class="btn secondary sm" onclick="doLogout()">Exit</button>
     </div>
   </div>
@@ -282,7 +291,7 @@
 //  REPLACE THE VALUE BELOW WITH YOUR ANTHROPIC API KEY
 //  Example: const ANTHROPIC_API_KEY = 'sk-ant-api03-...'
 // ══════════════════════════════════════════════════════
-const ANTHROPIC_API_KEY = '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';
+const ANTHROPIC_API_KEY = () => localStorage.getItem('sq_apikey') || '';
 
 const GRADES = [
   {id:'K', label:'Kindergarten', short:'K',   emoji:'🌱', age:'5-6'},
@@ -370,8 +379,13 @@ function getGradeLabel(id){const g=GRADES.find(g=>g.id===id);return g?g.label:'G
 function doLogin(){
   const name=document.getElementById('login-name').value.trim();
   const pass=document.getElementById('login-pass').value;
+  const typedKey=document.getElementById('login-apikey').value.trim();
+  const savedKey=localStorage.getItem('sq_apikey')||'';
+  const key = typedKey || savedKey;
   if(!name){toast('Enter your name!');return;}
   if(pass!=='explorer'){toast('Wrong password — try: explorer');return;}
+  if(!key||!key.startsWith('sk-')){toast('Enter your Anthropic API key (starts with sk-)');return;}
+  if(typedKey) localStorage.setItem('sq_apikey', typedKey);
   state.name=name; state.grade=loginGrade; state.loggedIn=true;
   const today=new Date().toDateString();
   if(state.lastDate!==today){const y=new Date();y.setDate(y.getDate()-1);state.streak=(state.lastDate===y.toDateString())?state.streak+1:1;state.lastDate=today;}
@@ -452,11 +466,11 @@ function showTab(t){
 }
 
 async function callClaude(prompt){
-  if(!ANTHROPIC_API_KEY||ANTHROPIC_API_KEY==='YOUR_API_KEY_HERE')
-    throw new Error('API key not set. Open index.html and replace YOUR_API_KEY_HERE with your Anthropic key.');
+  const key = ANTHROPIC_API_KEY();
+  if(!key) throw new Error('No API key found. Please log out and enter your API key.');
   const res=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{'content-type':'application/json','x-api-key':ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2500,messages:[{role:'user',content:prompt}]})
   });
   const data=await res.json();
@@ -596,7 +610,24 @@ function renderHW(){
     </li>`).join('');
 }
 
+function resetKey(){
+  if(confirm('Remove saved API key? You will need to enter it again on next login.')){
+    localStorage.removeItem('sq_apikey');
+    doLogout();
+    const f=document.getElementById('apikey-field');
+    if(f) f.style.display='flex';
+    toast('API key removed. Please log in again with your new key.');
+  }
+}
+
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+
+// Hide API key field if already saved
+const _savedKey = localStorage.getItem('sq_apikey')||'';
+if(_savedKey) {
+  const f = document.getElementById('apikey-field');
+  if(f) f.style.display = 'none';
+}
 
 if(state.loggedIn){
   document.getElementById('login-name').value=state.name||'';
