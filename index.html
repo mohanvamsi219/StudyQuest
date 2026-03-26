@@ -811,11 +811,21 @@ Difficulty: ${lv.l} — ${lvDesc}.
 - A friendly 1-2 sentence explanation of the correct answer
 Reply ONLY with valid JSON, no markdown:
 {"questions":[{"q":"Question?","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"hint":"Think about...","explanation":"Because..."}]}
-correct is 0-indexed (0=A).`;
+CRITICAL RULES:
+- correct is 0-indexed: 0=option A, 1=option B, 2=option C, 3=option D
+- Double-check: the option at index "correct" MUST be the right answer
+- Verify each question: read the question, find the right answer in options, then set correct to that option's index
+- NEVER set correct to an index that points to a wrong answer`;
   try{
     const text=await callClaude(prompt);
     const clean=text.replace(/```json|```/g,'').trim();
-    currentQs=JSON.parse(clean).questions;
+    const parsed = JSON.parse(clean).questions;
+    // Validate correct index matches actual right answer
+    currentQs = parsed.map(q => {
+      // If correct index is out of bounds, default to 0
+      if(q.correct < 0 || q.correct >= q.options.length) q.correct = 0;
+      return q;
+    });
     renderQuestion(0);
   }catch(e){
     qc.innerHTML=`<div class="empty">⚠️ ${e.message}<br><br><button class="btn sm" onclick="generateQuestions('${sid}')">Try Again</button></div>`;
