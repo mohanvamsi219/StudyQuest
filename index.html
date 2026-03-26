@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudyQuest</title>
+<title>Kidyong — Daily Learning</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -28,27 +28,43 @@
 body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
 /* ══ LOGIN ══ */
-#login-screen{min-height:100vh;display:flex;background:linear-gradient(135deg,#f0f4ff 0%,#fff 60%,#f5f0ff 100%);}
-.login-left{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;gap:2rem;max-width:520px;margin:0 auto;}
-.login-right{flex:1;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,var(--blue) 0%,#6366f1 100%);padding:3rem;position:relative;overflow:hidden;}
-@media(max-width:768px){.login-right{display:none;}.login-left{max-width:100%;}}
-.login-right::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.08);top:-100px;right:-100px;}
-.login-right::after{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.06);bottom:-80px;left:-60px;}
-.hero-content{position:relative;z-index:1;color:#fff;text-align:center;}
-.hero-icon{font-size:5rem;margin-bottom:1.5rem;display:block;filter:drop-shadow(0 8px 24px rgba(0,0,0,.2));}
-.hero-title{font-family:var(--font);font-size:2.2rem;font-weight:900;letter-spacing:-.03em;margin-bottom:.75rem;}
-.hero-sub{font-size:1rem;opacity:.85;line-height:1.6;max-width:320px;}
-.hero-stats{display:flex;gap:2rem;justify-content:center;margin-top:2rem;}
-.hs-item{text-align:center;}
-.hs-v{font-family:var(--font);font-size:1.8rem;font-weight:900;}
-.hs-l{font-size:.72rem;opacity:.7;text-transform:uppercase;letter-spacing:.08em;margin-top:.1rem;}
+#login-screen{min-height:100vh;display:flex;flex-direction:row-reverse;background:#fff;}
 
-.brand{display:flex;align-items:center;gap:.6rem;margin-bottom:1.5rem;}
-.brand-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--blue),#6366f1);display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:var(--shadow-md);}
-.brand-name{font-family:var(--font);font-size:1.5rem;font-weight:900;color:var(--blue);letter-spacing:-.03em;}
-.login-title{font-family:var(--font);font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:.3rem;}
-.login-sub{font-size:.88rem;color:var(--text2);margin-bottom:1.5rem;}
-.login-form{background:var(--white);border-radius:var(--r3);padding:2rem;box-shadow:var(--shadow-lg);border:1px solid var(--border);width:100%;}
+/* RIGHT = form panel (shown first due to flex row-reverse) */
+.login-left{flex:0 0 480px;display:flex;flex-direction:column;justify-content:center;padding:3rem 3.5rem;background:#fff;overflow-y:auto;position:relative;}
+@media(max-width:900px){.login-left{flex:1;padding:2.5rem 2rem;}}
+
+/* LEFT = intro/branding panel */
+.login-right{flex:1;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,var(--blue) 0%,#6366f1 100%);padding:3.5rem;position:relative;overflow:hidden;}
+@media(max-width:768px){.login-right{display:none;}.login-left{flex:1;}}
+.login-right::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,.08);top:-150px;left:-100px;}
+.login-right::after{content:'';position:absolute;width:350px;height:350px;border-radius:50%;background:rgba(255,255,255,.06);bottom:-100px;right:-80px;}
+
+/* Intro content inside left panel */
+.hero-content{position:relative;z-index:1;color:#fff;max-width:420px;}
+.hero-icon{font-size:5rem;margin-bottom:1.5rem;display:block;filter:drop-shadow(0 8px 24px rgba(0,0,0,.2));}
+.hero-tagline{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.12em;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+.hero-tagline::before{content:'';width:24px;height:2px;background:rgba(255,255,255,.5);border-radius:2px;}
+.hero-title{font-family:var(--font);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;letter-spacing:-.04em;line-height:1.12;margin-bottom:1rem;}
+.hero-sub{font-size:.95rem;opacity:.85;line-height:1.7;max-width:340px;margin-bottom:2rem;}
+
+/* Feature bullets */
+.hero-feats{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem;}
+.hero-feat{display:flex;align-items:center;gap:.75rem;font-size:.88rem;font-weight:600;color:rgba(255,255,255,.9);}
+.hero-feat-ic{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+
+.hero-stats{display:flex;gap:2rem;margin-top:2rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.15);}
+.hs-item{text-align:left;}
+.hs-v{font-family:var(--font);font-size:1.8rem;font-weight:900;line-height:1;}
+.hs-l{font-size:.68rem;opacity:.65;text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;}
+
+/* Form panel top branding */
+.brand{display:flex;align-items:center;gap:.6rem;margin-bottom:2rem;}
+.brand-icon{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--blue),#6366f1);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md);}
+.brand-name{font-family:var(--font);font-size:1.4rem;font-weight:900;color:var(--blue);letter-spacing:-.03em;}
+.login-title{font-family:var(--font);font-size:1.5rem;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:.25rem;}
+.login-sub{font-size:.85rem;color:var(--text2);margin-bottom:1.5rem;}
+.login-form{background:transparent;border-radius:0;padding:0;box-shadow:none;border:none;width:100%;}
 .field{display:flex;flex-direction:column;gap:.35rem;margin-bottom:1.1rem;}
 .field label{font-size:.75rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;}
 .field input,.field select{background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--r);padding:.8rem 1rem;color:var(--text);font-family:var(--font2);font-size:.93rem;outline:none;transition:all .2s;width:100%;}
@@ -95,19 +111,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
 
 /* ══ TOPBAR ══ */
 #main-app{display:none;flex-direction:column;min-height:100vh;}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;border-bottom:2px solid var(--border);background:var(--white);position:sticky;top:0;z-index:100;gap:.5rem;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,.06);}
-.tb-brand{display:flex;align-items:center;gap:.5rem;}
-.tb-icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--blue),#6366f1);display:flex;align-items:center;justify-content:center;font-size:.95rem;}
-.tb-name{font-family:var(--font);font-size:1rem;font-weight:900;color:var(--blue);letter-spacing:-.02em;}
-.tb-mid{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
-.chip{display:flex;align-items:center;gap:.3rem;border-radius:20px;padding:.3rem .8rem;font-size:.75rem;font-weight:700;font-family:var(--font);}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.25rem;border-bottom:2px solid var(--border);background:var(--white);position:sticky;top:0;z-index:100;gap:.4rem;box-shadow:0 2px 8px rgba(0,0,0,.06);min-height:58px;}
+.tb-brand{display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
+.tb-icon{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--blue),#6366f1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tb-name{font-family:var(--font);font-size:.95rem;font-weight:900;color:var(--blue);letter-spacing:-.02em;white-space:nowrap;}
+.tb-mid{display:flex;align-items:center;gap:.35rem;flex:1;justify-content:center;flex-wrap:nowrap;overflow:hidden;}
+.chip{display:flex;align-items:center;gap:.25rem;border-radius:20px;padding:.25rem .65rem;font-size:.7rem;font-weight:700;font-family:var(--font);white-space:nowrap;}
 .chip.fire{background:var(--orange-l);color:var(--orange);}
 .chip.grade{background:var(--blue-l);color:var(--blue);cursor:pointer;transition:all .18s;}
 .chip.grade:hover{background:var(--blue-m);}
 .chip.lvl{background:var(--purple-l);color:var(--purple);}
-.tb-right{display:flex;align-items:center;gap:.5rem;}
-.tb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#6366f1);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff;font-family:var(--font);}
-.tb-uname{font-size:.82rem;font-weight:600;color:var(--text2);}
+.tb-right{display:flex;align-items:center;gap:.4rem;flex-shrink:0;}
+.tb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#6366f1);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;font-family:var(--font);flex-shrink:0;}
+.tb-uname{font-size:.78rem;font-weight:600;color:var(--text2);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* Hide level chip and username on small screens */
+@media(max-width:480px){.chip.lvl{display:none;}.tb-uname{display:none;}.chip.grade span:last-child{display:none;}.tb-right .btn.ghost.sm:first-child{display:none;}}
+@media(max-width:360px){.chip.fire span{display:none;}}
 
 /* ══ LAYOUT ══ */
 .main-wrap{display:flex;flex:1;gap:0;}
@@ -323,14 +342,21 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
 
 /* ══ HOMEPAGE ══ */
 #homepage{display:block;}
-.hp-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.04);}
-.hp-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
-.hp-logo-ic{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--blue),#6366f1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 3px 10px rgba(59,110,248,.3);}
-.hp-logo-nm{font-family:var(--font);font-size:1.25rem;font-weight:900;color:var(--blue);letter-spacing:-.03em;}
-.hp-nav-links{display:flex;align-items:center;gap:2rem;}
-.hp-nav-links a{font-size:.88rem;font-weight:600;color:var(--text2);text-decoration:none;transition:color .2s;}
+.hp-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.04);}
+.hp-logo{display:flex;align-items:center;gap:.55rem;text-decoration:none;cursor:pointer;}
+.hp-logo-ic{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),#6366f1);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(59,110,248,.3);flex-shrink:0;}
+.hp-logo-nm{font-family:var(--font);font-size:1.2rem;font-weight:900;color:var(--blue);letter-spacing:-.03em;}
+.hp-nav-links{display:flex;align-items:center;gap:1.75rem;}
+.hp-nav-links a{font-size:.85rem;font-weight:600;color:var(--text2);text-decoration:none;transition:color .2s;white-space:nowrap;}
 .hp-nav-links a:hover{color:var(--blue);}
-.hp-nav-cta{display:flex;gap:.75rem;align-items:center;}
+.hp-nav-cta{display:flex;gap:.6rem;align-items:center;}
+/* Mobile hamburger */
+.hp-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.4rem;border:none;background:none;}
+.hp-hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hp-mobile-menu{display:none;position:fixed;inset:0;top:60px;background:rgba(255,255,255,.98);backdrop-filter:blur(20px);z-index:99;flex-direction:column;padding:1.5rem;gap:1rem;border-top:1px solid var(--border);}
+.hp-mobile-menu.open{display:flex;animation:fadeIn .2s ease;}
+.hp-mobile-menu a{font-size:1rem;font-weight:700;color:var(--text);text-decoration:none;padding:.75rem 0;border-bottom:1px solid var(--border);}
+.hp-mobile-menu .hp-btn{width:100%;justify-content:center;margin-top:.5rem;}
 .hp-btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.65rem 1.35rem;border-radius:var(--r);font-family:var(--font);font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;border:none;}
 .hp-btn.outline{background:transparent;border:2px solid var(--blue);color:var(--blue);}
 .hp-btn.outline:hover{background:var(--blue-l);}
@@ -426,13 +452,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
 .hp-footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;font-size:.78rem;}
 
 @media(max-width:900px){
-  .hp-hero-inner{grid-template-columns:1fr;gap:2rem;}.hp-hero-visual{display:none;}
+  .hp-hero-inner{grid-template-columns:1fr;gap:2rem;text-align:center;}.hp-hero-visual{display:none;}
+  .hp-hero-sub{margin:0 auto 2rem;}.hp-hero-btns{justify-content:center;}.hp-hero-trust{justify-content:center;flex-wrap:wrap;}
   .hp-feat-grid{grid-template-columns:1fr 1fr;}.hp-grades-grid{grid-template-columns:1fr 1fr;}
   .hp-steps{grid-template-columns:1fr;}.hp-steps::before{display:none;}
   .hp-footer-top{grid-template-columns:1fr 1fr;}
-  .hp-nav-links{display:none;}
+  .hp-nav-links{display:none;}.hp-nav-cta{display:none;}.hp-hamburger{display:flex;}
 }
-@media(max-width:600px){.hp-feat-grid{grid-template-columns:1fr;}.hp-grades-grid{grid-template-columns:1fr;}}
+@media(max-width:600px){
+  .hp-feat-grid{grid-template-columns:1fr;}.hp-grades-grid{grid-template-columns:1fr;}
+  .hp-footer-top{grid-template-columns:1fr;}
+  .hp-hero{padding:5.5rem 1.25rem 3rem;}
+  .hp-section-inner{padding:0 .25rem;}
+  .hp-features,.hp-grades,.hp-how,.hp-cta{padding:3.5rem 1.25rem;}
+}
 
 /* ENHANCED HOMEWORK */
 .hw-page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:.75rem;}
@@ -503,9 +536,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
 <div id="homepage">
   <!-- NAV -->
   <nav class="hp-nav">
-    <div class="hp-logo">
-      <div class="hp-logo-ic">🎓</div>
-      <span class="hp-logo-nm">StudyQuest</span>
+    <div class="hp-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <div class="hp-logo-ic"><svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="none"/><path d="M16 4C16 4 10 10 10 18C10 21.31 12.69 24 16 24C19.31 24 22 21.31 22 18C22 10 16 4 16 4Z" fill="white" opacity="0.95"/><circle cx="16" cy="18" r="3" fill="#3b6ef8"/><path d="M12 26L10 30M20 26L22 30" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12" r="2" fill="white" opacity="0.7"/><circle cx="24" cy="12" r="2" fill="white" opacity="0.7"/></svg></div>
+      <span class="hp-logo-nm">Kidyong</span>
     </div>
     <div class="hp-nav-links">
       <a href="#features">Features</a>
@@ -514,17 +547,28 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
     </div>
     <div class="hp-nav-cta">
       <button class="hp-btn outline" onclick="showLoginScreen()">Sign In</button>
-      <button class="hp-btn solid" onclick="showLoginScreen()">Get Started Free →</button>
+      <button class="hp-btn solid" onclick="showLoginScreen()">Get Started →</button>
+    </div>
+    <div class="hp-hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
     </div>
   </nav>
+  <!-- Mobile menu -->
+  <div class="hp-mobile-menu" id="mobile-menu">
+    <a href="#features" onclick="closeMobileMenu()">✨ Features</a>
+    <a href="#grades" onclick="closeMobileMenu()">📚 Grade Levels</a>
+    <a href="#how-it-works" onclick="closeMobileMenu()">📖 How It Works</a>
+    <button class="hp-btn outline" onclick="closeMobileMenu();showLoginScreen()">Sign In</button>
+    <button class="hp-btn solid" onclick="closeMobileMenu();showLoginScreen()">🚀 Get Started Free</button>
+  </div>
 
   <!-- HERO -->
   <section class="hp-hero">
     <div class="hp-hero-inner">
       <div class="hp-hero-text">
-        <div class="hp-hero-badge">🎓 AI-Powered Learning · Kindergarten to 8th Grade</div>
+        <div class="hp-hero-badge">🚀 AI-Powered Learning · Kindergarten to 8th Grade</div>
         <h1 class="hp-hero-title">Learn Every Day,<br><span>Grow Every Way</span></h1>
-        <p class="hp-hero-sub">StudyQuest gives every student personalized AI-generated questions, instant hints, their own AI tutor, and smart homework tracking — all in one place.</p>
+        <p class="hp-hero-sub">Kidyong gives every student personalized AI-generated questions, instant hints, their own AI tutor, and smart homework tracking — all in one place.</p>
         <div class="hp-hero-btns">
           <button class="hp-btn solid lg" onclick="showLoginScreen()">🚀 Start Learning Free</button>
           <button class="hp-btn outline lg" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">See How It Works</button>
@@ -563,7 +607,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
   <!-- FEATURES -->
   <section class="hp-features" id="features">
     <div class="hp-section-inner">
-      <div class="hp-section-badge">Why StudyQuest</div>
+      <div class="hp-section-badge">Why Kidyong</div>
       <h2 class="hp-section-title">Everything a student needs to thrive</h2>
       <p class="hp-section-sub">Built from the ground up for K–8 learners, with features that adapt to every child's pace and learning style.</p>
       <div class="hp-feat-grid">
@@ -625,7 +669,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
   <section class="hp-how" id="how-it-works">
     <div class="hp-section-inner" style="text-align:center">
       <div class="hp-section-badge">Get Started in Minutes</div>
-      <h2 class="hp-section-title">How StudyQuest works</h2>
+      <h2 class="hp-section-title">How Kidyong works</h2>
       <p class="hp-section-sub" style="margin:0 auto">Three simple steps to transform daily study into an engaging, personalized adventure.</p>
       <div class="hp-steps">
         <div class="hp-step">
@@ -652,7 +696,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
     <div class="hp-cta-inner">
       <h2 class="hp-cta-title">Ready to start learning?</h2>
       <p class="hp-cta-sub">Join students from Kindergarten to 8th Grade who are building better study habits every single day.</p>
-      <button class="hp-cta-btn" onclick="showLoginScreen()">🚀 Start Learning Free — It's Free!</button>
+      <button class="hp-cta-btn" onclick="showLoginScreen()">🚀 Start Learning on Kidyong — Free!</button>
     </div>
   </section>
 
@@ -662,10 +706,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
       <div class="hp-footer-top">
         <div>
           <div class="hp-footer-brand">
-            <div class="hp-footer-brand-ic">🎓</div>
-            <span class="hp-footer-brand-nm">StudyQuest</span>
+            <div class="hp-footer-brand-ic"><svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="none"/><path d="M16 4C16 4 10 10 10 18C10 21.31 12.69 24 16 24C19.31 24 22 21.31 22 18C22 10 16 4 16 4Z" fill="white" opacity="0.95"/><circle cx="16" cy="18" r="3" fill="#3b6ef8"/><path d="M12 26L10 30M20 26L22 30" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12" r="2" fill="white" opacity="0.7"/><circle cx="24" cy="12" r="2" fill="white" opacity="0.7"/></svg></div>
+            <span class="hp-footer-brand-nm">Kidyong</span>
           </div>
-          <div class="hp-footer-desc">AI-powered daily learning for K–8 students. Personalized questions, smart homework tracking, and your own AI tutor.</div>
+          <div class="hp-footer-desc">AI-powered daily learning for K–8 students. Personalized questions, smart homework tracking, and your own AI tutor. — Kidyong</div>
         </div>
         <div>
           <div class="hp-footer-col-title">Product</div>
@@ -694,7 +738,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
         </div>
       </div>
       <div class="hp-footer-bottom">
-        <div>© 2026 StudyQuest. All rights reserved.</div>
+        <div>© 2026 Kidyong. All rights reserved.</div>
         <div>Made with ❤️ for curious learners everywhere</div>
       </div>
     </div>
@@ -703,27 +747,38 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
 
 <!-- ══ LOGIN ══ -->
 <div id="login-screen" style="display:none">
+
+  <!-- RIGHT: Form panel (flex row-reverse makes this appear on the right) -->
   <div class="login-left">
-    <div>
-      <div class="brand" onclick="showHomepage()" style="cursor:pointer;text-decoration:none" title="Back to home">
-        <div class="brand-icon">🎓</div>
-        <div class="brand-name">StudyQuest</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;margin-top:.25rem">
-        <button onclick="showHomepage()" style="display:inline-flex;align-items:center;gap:.35rem;background:none;border:none;color:var(--text2);font-size:.83rem;font-weight:600;cursor:pointer;padding:.3rem 0;font-family:var(--font2)" title="Back to home">← Back to Home</button>
-      </div>
-      <div class="login-title">Welcome back!</div>
-      <div class="login-sub">Sign in to continue your learning adventure</div>
+    <!-- Top: Brand logo -->
+    <div class="brand" onclick="showHomepage()" style="cursor:pointer" title="Go to homepage">
+      <div class="brand-icon"><svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="none"/><path d="M16 4C16 4 10 10 10 18C10 21.31 12.69 24 16 24C19.31 24 22 21.31 22 18C22 10 16 4 16 4Z" fill="white" opacity="0.95"/><circle cx="16" cy="18" r="3" fill="#3b6ef8"/><path d="M12 26L10 30M20 26L22 30" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12" r="2" fill="white" opacity="0.7"/><circle cx="24" cy="12" r="2" fill="white" opacity="0.7"/></svg></div>
+      <div class="brand-name">Kidyong</div>
     </div>
+
+    <div class="login-title">Welcome back! 👋</div>
+    <div class="login-sub">Sign in to continue your learning adventure</div>
+
+    <!-- Form fields -->
     <div class="login-form">
-      <div class="field"><label>Your Name</label><input type="text" id="login-name" placeholder="Enter your name" autocomplete="name"/></div>
-      <div class="field"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••"/><span class="hint">Default password: <strong style="color:var(--blue)">explorer</strong></span></div>
+      <div class="field">
+        <label>Your Name</label>
+        <input type="text" id="login-name" placeholder="Enter your name" autocomplete="name"/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="••••••••"/>
+        <span class="hint">Default password: <strong style="color:var(--blue)">explorer</strong></span>
+      </div>
       <div class="field" id="apikey-field">
         <label>Anthropic API Key</label>
         <input type="password" id="login-apikey" placeholder="sk-ant-..."/>
         <span class="hint">Saved on this device only · Get yours at <a href="https://console.anthropic.com/settings/api-keys" target="_blank">console.anthropic.com</a></span>
       </div>
-      <div class="field"><label>Grade Level</label><div class="grade-grid" id="login-grade-grid"></div></div>
+      <div class="field">
+        <label>Grade Level</label>
+        <div class="grade-grid" id="login-grade-grid"></div>
+      </div>
       <div class="field">
         <label>Difficulty</label>
         <div class="level-row">
@@ -732,25 +787,46 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
           <div class="lvl-btn" data-lv="expert" style="--lc:var(--purple);--ll:var(--purple-l)" onclick="pickLvl(this,'expert','login')"><div class="li">🔥</div><div class="ln">Expert</div><div class="ld">Challenge me</div></div>
         </div>
       </div>
-      <button class="btn" onclick="doLogin()">Launch Mission 🚀</button>
+
+      <!-- Primary CTA -->
+      <button class="btn" onclick="doLogin()" style="margin-top:1.25rem">Launch Mission 🚀</button>
+
+      <!-- Cancel / Back button — clear, below the form -->
+      <button onclick="showHomepage()" style="width:100%;margin-top:.75rem;padding:.75rem 1.5rem;background:transparent;border:1.5px solid var(--border2);border-radius:var(--r);color:var(--text2);font-family:var(--font2);font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;transition:all .2s" onmouseover="this.style.background='var(--surface)';this.style.borderColor='var(--border)';this.style.color='var(--text)'" onmouseout="this.style.background='transparent';this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
+        ← Cancel &amp; Go Back to Home
+      </button>
     </div>
-    <div id="user-switcher" style="display:none;width:100%">
+
+    <!-- Returning users -->
+    <div id="user-switcher" style="display:none;width:100%;margin-top:1.5rem">
       <div class="usw-lbl">Returning learners</div>
       <div id="user-cards"></div>
     </div>
   </div>
+
+  <!-- LEFT: Intro / branding panel -->
   <div class="login-right">
     <div class="hero-content">
-      <span class="hero-icon">🎓</span>
+      <span class="hero-icon"><svg width="64" height="64" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="none"/><path d="M16 4C16 4 10 10 10 18C10 21.31 12.69 24 16 24C19.31 24 22 21.31 22 18C22 10 16 4 16 4Z" fill="white" opacity="0.95"/><circle cx="16" cy="18" r="3" fill="#6366f1"/><path d="M12 26L10 30M20 26L22 30" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12" r="2" fill="white" opacity="0.7"/><circle cx="24" cy="12" r="2" fill="white" opacity="0.7"/></svg></span>
+      <div class="hero-tagline">AI-Powered Learning Platform</div>
       <div class="hero-title">Learn Every Day,<br>Grow Every Way</div>
-      <div class="hero-sub">AI-powered practice for Kindergarten through 8th Grade. Personalized questions, instant hints, and your own AI tutor.</div>
+      <div class="hero-sub">Personalized AI questions, instant hints, your own AI tutor, and smart homework tracking — all in one place for K–8 students.</div>
+
+      <div class="hero-feats">
+        <div class="hero-feat"><div class="hero-feat-ic">🤖</div>AI-generated questions every session</div>
+        <div class="hero-feat"><div class="hero-feat-ic">💡</div>Instant hints and step-by-step explanations</div>
+        <div class="hero-feat"><div class="hero-feat-ic">📋</div>Smart homework tracker with due dates</div>
+        <div class="hero-feat"><div class="hero-feat-ic">🏆</div>XP, levels, streaks and awards</div>
+      </div>
+
       <div class="hero-stats">
         <div class="hs-item"><div class="hs-v">K–8</div><div class="hs-l">Grade Levels</div></div>
-        <div class="hs-item"><div class="hs-v">6</div><div class="hs-l">Subjects</div></div>
+        <div class="hs-item"><div class="hs-v">6+</div><div class="hs-l">Subjects</div></div>
         <div class="hs-item"><div class="hs-v">AI</div><div class="hs-l">Powered</div></div>
       </div>
     </div>
   </div>
+
 </div>
 
 <!-- GRADE MODAL -->
@@ -775,7 +851,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
 <!-- ══ MAIN APP ══ -->
 <div id="main-app">
   <div class="topbar">
-    <div class="tb-brand"><div class="tb-icon">🎓</div><div class="tb-name">StudyQuest</div></div>
+    <div class="tb-brand"><div class="tb-icon"><svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="none"/><path d="M16 4C16 4 10 10 10 18C10 21.31 12.69 24 16 24C19.31 24 22 21.31 22 18C22 10 16 4 16 4Z" fill="white" opacity="0.95"/><circle cx="16" cy="18" r="3" fill="#3b6ef8"/><path d="M12 26L10 30M20 26L22 30" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="8" cy="12" r="2" fill="white" opacity="0.7"/><circle cx="24" cy="12" r="2" fill="white" opacity="0.7"/></svg></div><div class="tb-name">Kidyong</div></div>
     <div class="tb-mid">
       <div class="chip fire">🔥 <span id="streak-count">0</span> day streak</div>
       <div class="chip grade" onclick="openGradeModal()">📚 <span id="tb-grade">7th Grade</span> ✏️</div>
@@ -784,8 +860,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
     <div class="tb-right">
       <div class="tb-av" id="tb-av">?</div>
       <div class="tb-uname" id="tb-uname"></div>
-      <button class="btn ghost sm" onclick="resetKey()" title="Change API Key">🔑</button>
-      <button class="btn ghost sm" onclick="doLogout()">Exit</button>
+      <button class="btn ghost sm" onclick="resetKey()" title="Change API Key" style="padding:.35rem .6rem;font-size:.72rem">🔑</button>
+      <button class="btn ghost sm" onclick="doLogout()" style="padding:.35rem .7rem;font-size:.72rem">Exit</button>
     </div>
   </div>
 
@@ -880,7 +956,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font2);min-height:
           <div class="chat-hdr">
             <div class="chat-hdr-left">
               <div class="ai-avatar">🤖</div>
-              <div><div class="ai-name">StudyQuest AI Tutor</div><div class="ai-status"><div class="ai-dot"></div><span id="ai-status-txt">Online & ready</span></div></div>
+              <div><div class="ai-name">Kidyong AI Tutor</div><div class="ai-status"><div class="ai-dot"></div><span id="ai-status-txt">Online & ready</span></div></div>
             </div>
             <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
               <div class="voice-toggle">
@@ -1149,10 +1225,10 @@ function showPage(p){
 }
 
 // ══ PRACTICE ══
-let curSid=null,curQs=[],answers={},curIdx=0,revealed=false,smartScore=0,sessionCorrect=0;
+let curSid=null,curQs=[],answers={},curIdx=0,revealed=false,smartScore=0,sessionCorrect=0,revealedQs=new Set();
 
 async function startSession(sid){
-  curSid=sid;curQs=[];answers={};curIdx=0;revealed=false;smartScore=0;sessionCorrect=0;
+  curSid=sid;curQs=[];answers={};curIdx=0;revealed=false;smartScore=0;sessionCorrect=0;revealedQs=new Set();
   const subj=getSubjects(state.grade).find(s=>s.id===sid);
   const gr=GRADES.find(g=>g.id===state.grade);
   const lv=LEVELS[state.level||'beginner'];
@@ -1172,16 +1248,59 @@ async function startSession(sid){
 Generate exactly 10 multiple-choice questions about "${subj.n}" — ${subj.d}.
 Difficulty: ${lv.l} — ${lvMap[state.level||'beginner']}.
 - Language perfectly appropriate for ${ageDesc}
-- 4 options each (A,B,C,D), exactly one correct
+- Each question has exactly 4 answer choices labeled A, B, C, D
+- Exactly ONE choice is correct — place the correct answer in DIFFERENT positions (not always the same letter)
+- The "correct" field is 0-indexed: 0=A, 1=B, 2=C, 3=D
+- CRITICAL: Before setting "correct", re-read the question, compute the right answer, find which option text matches it, then set "correct" to THAT option's index
 - A SHORT one-sentence hint (no answer given)
 - A friendly explanation for the correct answer
 - Questions 1-3 easiest for this level, 4-7 medium, 8-10 hardest
-Reply ONLY valid JSON, no markdown:
-{"questions":[{"q":"Question?","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"hint":"Think about...","explanation":"Because..."}]}`;
+
+Reply ONLY valid JSON, no markdown, no extra text:
+{"questions":[{"q":"Question?","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"hint":"Think about...","explanation":"Because..."}]}
+
+DOUBLE-CHECK: For every question verify that options[correct] is actually the right answer.`;
   try{
     const text=await callClaude(prompt);
     const clean=text.replace(/```json|```/g,'').trim();
-    curQs=JSON.parse(clean).questions;
+    const parsed=JSON.parse(clean).questions;
+
+    // ── STEP 2: Second API call to verify — returns plain letters only ──
+    document.getElementById('q-area').innerHTML=`<div class="loading-wrap"><div class="loader"></div><p style="color:var(--text2);font-size:.88rem;margin-top:.5rem">Verifying answers…</p></div>`;
+
+    try{
+      // Build a numbered list of questions with options
+      const lines=parsed.map((q,i)=>{
+        const opts=q.options.map((o,oi)=>String.fromCharCode(65+oi)+') '+o.replace(/^[A-D]\. ?/,'')).join(', ');
+        return (i+1)+'. '+q.q+' Choices: '+opts;
+      }).join('\n');
+
+      const vp='For each question below, write ONLY the letter of the correct answer (A, B, C, or D). Output exactly '+parsed.length+' lines, one letter per line, nothing else.\n\n'+lines;
+      const vt=await callClaude(vp);
+
+      // Parse response: extract one letter per line
+      const letters=vt.trim().split('\n')
+        .map(l=>l.trim().match(/^([A-D])/i))
+        .map(m=>m?m[1].toUpperCase():null);
+
+      letters.forEach((letter,i)=>{
+        if(letter&&parsed[i]){
+          const idx='ABCD'.indexOf(letter);
+          if(idx>=0&&idx<parsed[i].options.length){
+            parsed[i].correct=idx;
+          }
+        }
+      });
+    }catch(verifyErr){
+      console.warn('Verify step failed, using original indices',verifyErr);
+    }
+
+    // Final clamp
+    curQs=parsed.map(q=>{
+      const ci=Math.round(Number(q.correct)||0);
+      q.correct=(ci>=0&&ci<q.options.length)?ci:0;
+      return q;
+    });
     showQuestion(0);
     updateNavDots();
   }catch(e){
@@ -1194,7 +1313,7 @@ function showQuestion(idx){
   curIdx=idx;
   const q=curQs[idx];
   const isAnswered=answers[idx]!==undefined;
-  const isRevealed=isAnswered&&revealed;
+  const isRevealed=revealedQs.has(idx);
   document.getElementById('q-area').innerHTML=`
     <div class="q-card">
       <div class="q-meta">
@@ -1212,7 +1331,9 @@ function showQuestion(idx){
           if(isAnswered){if(oi===q.correct){cls+=' correct';}else if(oi===answers[idx]){cls+=' incorrect';}}
           else if(answers[idx]===oi){cls+=' sel';}
           const check=oi===q.correct&&isAnswered?'✓':oi===answers[idx]&&isAnswered&&oi!==q.correct?'✗':answers[idx]===oi&&!isAnswered?'✓':'';
-          return`<div class="${cls}" id="opt-${idx}-${oi}" onclick="pickAnswer(${idx},${oi})">
+          const canClick=!revealedQs.has(idx);
+          const clickAttr=canClick?`onclick="pickAnswer(${idx},${oi})"`:'';
+          return`<div class="${cls}" id="opt-${idx}-${oi}" ${clickAttr} style="cursor:${canClick?'pointer':'default'}">
             <div class="opt-letter">${'ABCD'[oi]}</div>
             <div class="opt-text">${o.replace(/^[A-D]\.\s*/,'')}</div>
             <div class="opt-check">${check}</div>
@@ -1224,11 +1345,12 @@ function showQuestion(idx){
       <div class="q-nav">
         <div style="display:flex;gap:.5rem">
           ${idx>0?`<button class="btn ghost sm" onclick="showQuestion(${idx-1})">← Prev</button>`:''}
+          <button class="btn ghost sm" onclick="backToSubjects()" style="font-size:.72rem;padding:.4rem .75rem;color:var(--text3)">✕ Exit</button>
         </div>
         <div style="display:flex;gap:.5rem">
-          ${!isAnswered?`<button class="btn sm" onclick="submitOne(${idx})">Check Answer ✓</button>`:''}
-          ${isAnswered&&idx<curQs.length-1?`<button class="btn green sm" onclick="showQuestion(${idx+1})">Next →</button>`:''}
-          ${isAnswered&&idx===curQs.length-1?`<button class="btn green sm" onclick="showScore()">See Results 🏆</button>`:''}
+          ${!isRevealed?`<button class="btn sm" onclick="submitOne(${idx})">Check Answer ✓</button>`:''}
+          ${isRevealed&&idx<curQs.length-1?`<button class="btn green sm" onclick="showQuestion(${idx+1})">Next →</button>`:''}
+          ${isRevealed&&idx===curQs.length-1?`<button class="btn green sm" onclick="showScore()">See Results 🏆</button>`:''}
         </div>
       </div>
     </div>`;
@@ -1239,21 +1361,26 @@ function toggleHint(idx){const h=document.getElementById('hint-'+idx);if(h)h.cla
 function toggleScratch(idx){const s=document.getElementById('scratch-'+idx);if(s)s.classList.toggle('show');}
 
 function pickAnswer(idx,oi){
-  if(answers[idx]!==undefined)return;
+  // Block changes after answer has been revealed/submitted
+  if(revealedQs&&revealedQs.has(idx))return;
   answers[idx]=oi;
+  // Update visual selection — allow changing answer freely before submitting
   document.querySelectorAll(`#opt-${idx}-0,#opt-${idx}-1,#opt-${idx}-2,#opt-${idx}-3`).forEach((el,i)=>{
-    el.classList.remove('sel');if(i===oi){el.classList.add('sel');el.querySelector('.opt-check').textContent='✓';}
+    el.classList.remove('sel','correct','incorrect');
+    el.querySelector('.opt-check').textContent='';
+    if(i===oi){el.classList.add('sel');el.querySelector('.opt-check').textContent='✓';}
   });
 }
 
 function submitOne(idx){
   if(answers[idx]===undefined){toast('Select an answer first!');return;}
+  if(revealedQs.has(idx)){toast('Already submitted!');return;}
+  revealedQs.add(idx);
   const q=curQs[idx];const correct=answers[idx]===q.correct;
   if(correct)sessionCorrect++;
-  smartScore=Math.round((sessionCorrect/Math.max(1,Object.keys(answers).length))*100);
-  updateSidebar(Object.keys(answers).length,sessionCorrect);
+  smartScore=Math.round((sessionCorrect/Math.max(1,Object.keys(revealedQs).length||1))*100);
+  updateSidebar(revealedQs.size,sessionCorrect);
   updateNavDots();
-  // Check awards
   checkAwards();
   showQuestion(idx);
 }
@@ -1297,6 +1424,8 @@ function checkAwards(){
 }
 
 function showScore(){
+  // Prevent double-counting if called multiple times
+  if(document.getElementById('score-overlay'))return;
   const total=curQs.length;const correct=sessionCorrect;
   const pct=Math.round(correct/total*100);
   const xp=correct*15+total*3;
@@ -1304,31 +1433,72 @@ function showScore(){
   state.subjectProgress[curSid].done+=total;state.subjectProgress[curSid].correct+=correct;
   state.totalQ+=total;state.todayQ+=total;state.correct+=correct;state.xp+=xp;
   save();updateUI();buildSubjects();
-  const msgs=pct===100?['🎉 Perfect!','Every answer correct — you\'re a star!']:pct>=80?['⭐ Excellent!','Really strong work — keep it up!']:pct>=60?['👍 Good Job!','Solid effort — keep practicing!']:['🔄 Keep Going!','Review the explanations and try again!'];
+  const wrongCount=total-correct;
+  const subj=getSubjects(state.grade).find(s=>s.id===curSid);
+  const emoji=pct===100?'🏆':pct>=80?'⭐':pct>=60?'👍':'💪';
+  const title=pct===100?'Perfect Score!':pct>=80?'Excellent Work!':pct>=60?'Good Job!':'Keep Going!';
+  const sub=pct===100?"Every single answer correct — you're a star!":pct>=80?'Really strong performance — keep it up!':pct>=60?"Solid effort — a bit more practice and you'll master it!":'Review the explanations and try again!';
   const offset=408-(408*pct/100);
-  document.getElementById('score-screen').innerHTML=`
-    <div class="score-hero">
-      <div class="score-emoji">${msgs[0].split(' ')[0]}</div>
-      <div class="score-title">${msgs[0]}</div>
-      <div class="score-sub">${msgs[1]}</div>
-      <div class="score-ring-big">
-        <svg viewBox="0 0 150 150" width="150" height="150">
-          <circle class="srb-bg" cx="75" cy="75" r="65"/>
-          <circle class="srb-fill" id="srb-fill" cx="75" cy="75" r="65" style="stroke-dashoffset:${offset}"/>
+  const lvl=Math.floor(state.xp/100)+1;
+  // Inject full-screen overlay — always visible regardless of scroll position
+  const ov=document.createElement('div');
+  ov.id='score-overlay';
+  ov.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(244,246,251,.97);backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:2rem 1rem;animation:fadeIn .35s ease';
+  ov.innerHTML=`
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:var(--r3);padding:2.5rem 2rem;box-shadow:var(--shadow-lg);text-align:center;max-width:560px;width:100%;animation:slideUp .4s ease;margin:auto;">
+      <div style="font-size:3.5rem;margin-bottom:.5rem">${emoji}</div>
+      <div style="font-family:var(--font);font-size:1.6rem;font-weight:900;letter-spacing:-.03em;color:var(--text);margin-bottom:.3rem">${title}</div>
+      <div style="font-size:.88rem;color:var(--text2);margin-bottom:1.75rem;line-height:1.5">${sub}</div>
+
+      <div style="position:relative;width:140px;height:140px;margin:0 auto 1.75rem">
+        <svg viewBox="0 0 150 150" width="140" height="140" style="transform:rotate(-90deg)">
+          <defs><linearGradient id="sg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:var(--blue)"/><stop offset="100%" style="stop-color:#6366f1"/></linearGradient></defs>
+          <circle fill="none" stroke="var(--border)" stroke-width="12" cx="75" cy="75" r="65"/>
+          <circle fill="none" stroke="url(#sg2)" stroke-width="12" stroke-linecap="round" cx="75" cy="75" r="65" stroke-dasharray="408" stroke-dashoffset="${offset}" style="transition:stroke-dashoffset 1s ease"/>
         </svg>
-        <div class="srb-inner"><div class="srb-n">${correct}</div><div class="srb-d">of ${total}</div></div>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="font-family:var(--font);font-size:2rem;font-weight:900;color:var(--blue);letter-spacing:-.04em">${correct}</div>
+          <div style="font-size:.75rem;color:var(--text3);font-weight:600">of ${total}</div>
+        </div>
       </div>
-    </div>
-    <div class="score-grid">
-      <div class="sg-card"><div class="sg-v" style="color:var(--green)">${correct}</div><div class="sg-l">Correct</div></div>
-      <div class="sg-card"><div class="sg-v" style="color:var(--purple)">+${xp}</div><div class="sg-l">XP Earned</div></div>
-      <div class="sg-card"><div class="sg-v" style="color:var(--blue)">${pct}%</div><div class="sg-l">Accuracy</div></div>
-    </div>
-    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1rem">
-      <button class="btn sm" onclick="startSession('${curSid}')">🔄 Try Again</button>
-      <button class="btn ghost sm" onclick="backToSubjects()">↩ New Subject</button>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1.5rem">
+        <div style="background:var(--green-l);border-radius:var(--r);padding:.85rem .4rem">
+          <div style="font-family:var(--font);font-size:1.3rem;font-weight:900;color:var(--green)">${correct}</div>
+          <div style="font-size:.65rem;color:var(--green);font-weight:700;margin-top:.1rem">Correct ✓</div>
+        </div>
+        <div style="background:var(--red-l);border-radius:var(--r);padding:.85rem .4rem">
+          <div style="font-family:var(--font);font-size:1.3rem;font-weight:900;color:var(--red)">${wrongCount}</div>
+          <div style="font-size:.65rem;color:var(--red);font-weight:700;margin-top:.1rem">Incorrect ✗</div>
+        </div>
+        <div style="background:var(--blue-l);border-radius:var(--r);padding:.85rem .4rem">
+          <div style="font-family:var(--font);font-size:1.3rem;font-weight:900;color:var(--blue)">${pct}%</div>
+          <div style="font-size:.65rem;color:var(--blue);font-weight:700;margin-top:.1rem">Accuracy</div>
+        </div>
+        <div style="background:var(--purple-l);border-radius:var(--r);padding:.85rem .4rem">
+          <div style="font-family:var(--font);font-size:1.3rem;font-weight:900;color:var(--purple)">+${xp}</div>
+          <div style="font-size:.65rem;color:var(--purple);font-weight:700;margin-top:.1rem">XP Earned</div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:.7rem 1rem;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:center;gap:1.25rem;flex-wrap:wrap;font-size:.82rem">
+        <span style="color:var(--text2)">${subj?subj.ic+' ':''}<strong style="color:var(--text)">${subj?subj.n:''}</strong></span>
+        <span style="color:var(--orange);font-weight:700">🔥 ${state.streak} day streak</span>
+        <span style="color:var(--blue);font-weight:700">Lv.${lvl} · ${state.xp} XP</span>
+      </div>
+
+      <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn" onclick="closeScore();showPage('dashboard');backToSubjects()" style="width:auto;padding:.8rem 1.5rem">🏠 Dashboard</button>
+        <button class="btn green sm" onclick="closeScore();startSession('${curSid}')">🔄 Try Again</button>
+        <button class="btn ghost sm" onclick="closeScore();backToSubjects()">📚 New Subject</button>
+      </div>
     </div>`;
-  document.getElementById('q-area').innerHTML='';
+  document.body.appendChild(ov);
+}
+
+function closeScore(){
+  const ov=document.getElementById('score-overlay');
+  if(ov)ov.remove();
 }
 
 function backToSubjects(){
@@ -1343,7 +1513,7 @@ let chatHist=[];let voiceOn=false;let isRec=false;
 function initChat(){
   const msgs=document.getElementById('chat-msgs');if(!msgs||msgs.children.length>0)return;
   const gr=GRADES.find(g=>g.id===state.grade);
-  addAI(`Hi ${state.name}! 👋 I'm your AI tutor.\n\nI can help you with:\n• **Explain topics** — "What is photosynthesis?"\n• **Quick quiz** — "Quiz me on fractions"\n• **Homework help** — "How do I solve 2x + 4 = 10?"\n\nWhat would you like to learn? 🎓`);
+  addAI(`Hi ${state.name}! 👋 I'm Kidyong AI, your personal tutor.\n\nI can help you with:\n• **Explain topics** — "What is photosynthesis?"\n• **Quick quiz** — "Quiz me on fractions"\n• **Homework help** — "How do I solve 2x + 4 = 10?"\n\nWhat would you like to learn? 🎓`);
 }
 
 function addAI(t){
@@ -1370,7 +1540,7 @@ async function sendMsg(){
   const inp=document.getElementById('chat-inp');const t=inp.value.trim();if(!t)return;
   inp.value='';inp.style.height='auto';addUser(t);showTyping();
   const gr=GRADES.find(g=>g.id===state.grade);
-  const sys=`You are a warm, encouraging AI tutor for a ${gr?gr.label+' student (age '+gr.age+')':'student'}. Keep responses concise and friendly. Use simple language. Format with line breaks. Bold key terms with **term**. When asked to quiz, give 3 questions max.`;
+  const sys=`You are Kidyong AI, a warm, encouraging AI tutor for a ${gr?gr.label+' student (age '+gr.age+')':'student'}. Keep responses concise and friendly. Use simple language. Format with line breaks. Bold key terms with **term**. When asked to quiz, give 3 questions max.`;
   try{
     const key=APIKEY();
     const msgs=chatHist.slice(-12);
@@ -1548,7 +1718,7 @@ function scheduleReminder(hw){
   Notification.requestPermission().then(p=>{
     if(p==='granted'&&hw.reminder){
       const ms=new Date(hw.reminder).getTime()-Date.now();
-      if(ms>0){setTimeout(()=>{new Notification('📚 StudyQuest Reminder',{body:'Time to work on: '+hw.text,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🎓</text></svg>'});},ms);}
+      if(ms>0){setTimeout(()=>{new Notification('📚 Kidyong Reminder',{body:'Time to work on: '+hw.text,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🎓</text></svg>'});},ms);}
     }
   });
 }
@@ -1711,6 +1881,30 @@ async function callClaude(prompt){
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800);}
 
 // ══ HOMEPAGE ══
+function toggleMobileMenu(){
+  const menu=document.getElementById('mobile-menu');
+  const ham=document.getElementById('hamburger');
+  if(!menu)return;
+  menu.classList.toggle('open');
+  const isOpen=menu.classList.contains('open');
+  ham.style.transform=isOpen?'rotate(90deg)':'none';
+}
+function closeMobileMenu(){
+  const menu=document.getElementById('mobile-menu');
+  const ham=document.getElementById('hamburger');
+  if(menu)menu.classList.remove('open');
+  if(ham)ham.style.transform='none';
+}
+// Close mobile menu when clicking outside
+document.addEventListener('click',e=>{
+  const menu=document.getElementById('mobile-menu');
+  const ham=document.getElementById('hamburger');
+  const nav=document.querySelector('.hp-nav');
+  if(menu&&ham&&nav&&!nav.contains(e.target)&&!menu.contains(e.target)){
+    closeMobileMenu();
+  }
+});
+
 function showLoginScreen(){
   document.getElementById('homepage').style.display='none';
   document.getElementById('login-screen').style.display='flex';
